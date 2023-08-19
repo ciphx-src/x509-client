@@ -27,3 +27,6 @@ tokio = { version = "1.30.0", features = ["full"] }
 
 [features]
 openssl = ["dep:openssl", "dep:cms"]
+
+[package.metadata.docs.rs]
+all-features = true
