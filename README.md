@@ -19,48 +19,55 @@ Supported encoding formats:
 
 ## Usage
 
-Enable the `openssl` feature to have access to the builtin OpenSSL-based [`OpenSSLX509Iterator`](crate::provided::openssl::OpenSSLX509Iterator) deserializer.
+The [RustCrypto-based](https://github.com/RustCrypto) [`DefaultX509Iterator`](crate::provided::default::DefaultX509Iterator) implementation is available by default.
+
+````text
+[dependencies]
+x509_client = { version = "1" }
+````
+
+Enable the `openssl` feature for access to the provided [OpenSSL-based](https://github.com/sfackler/rust-openssl) [`OpenSSLX509Iterator`](crate::provided::openssl::OpenSSLX509Iterator) deserializer.
 
 ````text
 [dependencies]
 x509_client = { version = "1", features = ["openssl"] }
 ````
 
-The X509 Client is X509 format agnostic. When constructing the client, use the turbofish expression to choose the deserializer implementation.
+The X509 Client is data-model agnostic. When constructing the client, use the turbofish expression to choose the deserializer implementation.
 
 ```` rust
 use x509_client::{X509Client, X509ClientConfiguration};
-use x509_client::provided::openssl::OpenSSLX509Iterator;
+use x509_client::provided::default::DefaultX509Iterator;
 
 #[tokio::test]
 async fn test() {    
-    // default X509 Client with the builtin OpenSSLX509Iterator 
-    let client = X509Client::<OpenSSLX509Iterator>::default();    
+    // default X509 Client with the default DefaultX509Iterator 
+    let client = X509Client::<DefaultX509Iterator>::default();    
     assert!(client.get(&url::Url::parse("http://localhost")?).await.is_ok());
     
-    // Configured X509 Client with the builtin OpenSSLX509Iterator
-    let client = X509Client::<OpenSSLX509Iterator>::new(X509ClientConfiguration::default());
+    // Configured X509 Client with the default DefaultX509Iterator
+    let client = X509Client::<DefaultX509Iterator>::new(X509ClientConfiguration::default());
     assert!(client.get_all(&url::Url::parse("http://localhost")?)?.into_inter().len() >= 0);
 }
 ````
 
 ### Example
 
-Transfer and parse a single certificate and multiple certificates, using the builtin [`OpenSSLX509Iterator`](crate::provided::openssl::OpenSSLX509Iterator) implementation.
+Transfer and parse a single certificate and multiple certificates, using the default [`DefaultX509Iterator`](crate::provided::default::DefaultX509Iterator) implementation.
 
 ```` rust
+use cms::cert::x509::Certificate;
 use x509_client::{X509Client, X509ClientConfiguration, X509ClientResult};
-use x509_client::provided::openssl::OpenSSLX509Iterator;
+use x509_client::provided::default::DefaultX509Iterator;
 use x509_client::reqwest::ClientBuilder;
 
-
-async fn get_first_certificate(url: &url::Url) -> X509ClientResult<openssl::x509::X509> {
-    // default X509 Client with the builtin OpenSSLX509Iterator 
-    let client = X509Client::<OpenSSLX509Iterator>::default();    
+async fn get_first_certificate(url: &url::Url) -> X509ClientResult<Certificate> {
+    // default X509 Client with the default DefaultX509Iterator 
+    let client = X509Client::<DefaultX509Iterator>::default();    
     Ok(client.get(&url).await?)    
 }
 
-async fn get_all_certificates(url: &url::Url) -> X509ClientResult<Vec<openssl::x509::X509>> {
+async fn get_all_certificates(url: &url::Url) -> X509ClientResult<Vec<Certificate>> {
     // configure reqwest
     let config = X509ClientConfiguration {
         strict: true,
@@ -72,8 +79,8 @@ async fn get_all_certificates(url: &url::Url) -> X509ClientResult<Vec<openssl::x
         ),
     };
         
-    // Configured X509 Client with the builtin OpenSSLX509Iterator
-    let client = X509Client::<OpenSSLX509Iterator>::new(config);
+    // Configured X509 Client with the default DefaultX509Iterator
+    let client = X509Client::<DefaultX509Iterator>::new(config);
             
     // HTTP GET and parse all certificates, returning all
     Ok(client.get_all(&url).await?.into_iter().collect())    
@@ -85,13 +92,13 @@ async fn get_all_certificates(url: &url::Url) -> X509ClientResult<Vec<openssl::x
 A default X509 Client can be instantiated with the [crate::X509Client::default](crate::X509Client::default) trait implementation.
 
 ```` text
-let client = X509Client::<OpenSSLX509Iterator>::default();
+let client = X509Client::<DefaultX509Iterator>::default();
 ````
 
 The X509 Client can be configured by passing the [`X509ClientConfiguration`](crate::X509ClientConfiguration) to the client [crate::X509Client::new](crate::X509Client::new) constructor:
 
 ```` text
-let client = X509Client::<OpenSSLX509Iterator>::new(config);
+let client = X509Client::<DefaultX509Iterator>::new(config);
 ````
 
 The  [`X509ClientConfiguration`](crate::X509ClientConfiguration) struct is defined as:
@@ -157,7 +164,7 @@ For `File` scheme, certificate type is determined by the filename extension (.ex
 
 ### API
 
-X509 Client is X509 format agnostic - the [`X509Iterator`](crate::api::X509Iterator) trait is used to define the deserializer interface.
+The X509 Client is data-model agnostic - the [`X509Iterator`](crate::api::X509Iterator) trait is used to define the deserializer interface.
 
 ```` rust
 use std::fmt::{Debug, Display};
@@ -214,9 +221,13 @@ impl From<MyX509IteratorError> for X509ClientError {
 
 ### Implementations
 
+#### Default
+
+The [RustCrypto-based](https://github.com/RustCrypto) [`DefaultX509Iterator`](crate::provided::default::DefaultX509Iterator) implementation is available if default features are enabled. 
+
 #### OpenSSL
 
-The OpenSSL-based implementation [`OpenSSLX509Iterator`](crate::provided::openssl::OpenSSLX509Iterator) is available if the `openssl` feature is enabled.
+The [OpenSSL-based](https://github.com/sfackler/rust-openssl) implementation [`OpenSSLX509Iterator`](crate::provided::openssl::OpenSSLX509Iterator) is available if the `openssl` feature is enabled.
 
 #### Debug
 
