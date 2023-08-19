@@ -20,7 +20,7 @@ async fn test_client_file() {
     let certificate_file_unknown = Path::new(file!())
         .parent()
         .unwrap()
-        .join("resource.resources.ciph.xxx.?");
+        .join("resource.resources.ciph.xxx.null");
     let certificate_file_unknown = fs::canonicalize(&certificate_file_unknown).unwrap();
 
     let certificate_file_unknown = Url::from_file_path(&certificate_file_unknown).unwrap();
