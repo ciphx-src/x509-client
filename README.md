@@ -1,6 +1,6 @@
 # X509 Client
 
-X509 Client is a Reqwest-based async X509 certificate transport and deserializer.
+X509 Client is an async X509 certificate transport and deserializer for Rust.
 
 ![CI Status](https://github.com/merlincinematic/x509-client/actions/workflows/ci.yaml/badge.svg)
 
