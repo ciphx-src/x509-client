@@ -10,7 +10,7 @@ categories = ["web-programming::http-client", "network-programming", "parser-imp
 keywords = ["x509", "der", "pem", "pkcs7", "http"]
 description = "Reqwest-based async X509 certificate transport and deserializer client. Transports: HTTP/S, File. Formats: DER, PEM, PKCS7."
 homepage = "https://ciphx.com"
-#exclude = ["/.github", "/.gitignore"]
+exclude = ["/.github", "/.gitignore"]
 
 [dependencies]
 log = { version = "0.4.19" }
