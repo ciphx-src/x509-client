@@ -4,10 +4,12 @@ version = "1.0.2"
 edition = "2021"
 authors = ["Curtis Lee Fulton <curtis@ciphx.com>"]
 repository = "https://github.com/merlincinematic/x509-client"
+readme = "README.md"
 license = "Apache-2.0"
 categories = ["web-programming::http-client", "network-programming", "parser-implementations", "parsing"]
 keywords = ["x509", "der", "pem", "pkcs7", "http"]
 description = "Reqwest-based async X509 certificate transport and deserializer client. Transports: HTTP/S, File. Formats: DER, PEM, PKCS7."
+homepage = "https://ciphx.com"
 
 [dependencies]
 log = { version = "0.4.19" }
