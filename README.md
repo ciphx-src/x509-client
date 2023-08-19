@@ -23,7 +23,7 @@ Enable the `openssl` feature to have access to the builtin OpenSSL-based [`OpenS
 
 ````text
 [dependencies]
-x509_client = { version = "1.0.2", features = ["openssl"] }
+x509_client = { version = "1", features = ["openssl"] }
 ````
 
 The X509 Client is X509 format agnostic. When constructing the client, use the turbofish expression to choose the deserializer implementation.
