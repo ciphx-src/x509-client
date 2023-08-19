@@ -22,21 +22,19 @@ impl OpenSSLX509Parser {
         // using cms crate instead
 
         let ci = ContentInfo::from_der(src.as_ref())?;
-        let bytes = ci.content.to_der()?;
-        let sd = SignedData::from_der(bytes.as_slice())?;
-        let certs: SetOfVec<CertificateChoices> = match sd.certificates {
-            None => return Ok(vec![]),
-            Some(v) => v,
-        }
-        .into();
+        let sd = SignedData::from_der(ci.content.to_der()?.as_slice())?;
 
-        let mut data = vec![];
-        for certificate in certs.into_vec() {
-            if let CertificateChoices::Certificate(certificate) = certificate {
-                data.push(X509::from_der(certificate.to_der()?.as_ref())?);
+        match sd.certificates {
+            None => Ok(vec![]),
+            Some(certificates) => {
+                let mut r = vec![];
+                for certificate in SetOfVec::from(certificates).into_vec() {
+                    if let CertificateChoices::Certificate(certificate) = certificate {
+                        r.push(X509::from_der(certificate.to_der()?.as_ref())?);
+                    }
+                }
+                Ok(r)
             }
         }
-
-        Ok(data)
     }
 }
