@@ -1,5 +1,5 @@
 mod iter;
-pub mod parser;
+mod parser;
 mod result;
 
 pub use iter::*;
