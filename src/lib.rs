@@ -12,4 +12,4 @@ mod result;
 pub mod provided;
 
 #[cfg(test)]
-pub mod tests;
+mod tests;
