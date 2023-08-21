@@ -1,8 +1,9 @@
-use crate::api::{X509Iterator, X509IteratorError};
+use crate::api::X509Iterator;
 use bytes::Bytes;
 use std::convert::Infallible;
 use std::iter;
 
+#[derive(Clone, Debug)]
 pub struct DebugX509Iterator(Bytes);
 
 impl From<Bytes> for DebugX509Iterator {
@@ -24,8 +25,6 @@ impl IntoIterator for DebugX509Iterator {
         iter::once(self.0)
     }
 }
-
-impl X509IteratorError for Infallible {}
 
 impl X509Iterator for DebugX509Iterator {
     type X509IteratorError = Infallible;
