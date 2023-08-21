@@ -132,8 +132,12 @@ where
                         buf.extend(b);
                         if buf.len() > limit {
                             return Err(X509ClientError::Error(
-                                format!("transfered bytes {} exceeded limit {}", buf.len(), limit)
-                                    .to_string(),
+                                format!(
+                                    "total transferred bytes {} exceeded limit {}",
+                                    buf.len(),
+                                    limit
+                                )
+                                .to_string(),
                             ));
                         }
                     }
