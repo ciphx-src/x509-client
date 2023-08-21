@@ -28,6 +28,7 @@ async fn test_client_file() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: true,
         files: true,
+        limit: None,
         test_client: Default::default(),
     });
 
@@ -37,6 +38,7 @@ async fn test_client_file() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: true,
         files: false,
+        limit: None,
         test_client: Default::default(),
     });
 
@@ -45,6 +47,7 @@ async fn test_client_file() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: false,
         files: true,
+        limit: None,
         test_client: Default::default(),
     });
 
@@ -53,6 +56,7 @@ async fn test_client_file() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: false,
         files: false,
+        limit: None,
         test_client: Default::default(),
     });
 
@@ -73,6 +77,7 @@ async fn test_client_http() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: true,
         files: false,
+        limit: None,
         test_client: TestClient {
             headers: headers.clone(),
             bytes: Default::default(),
@@ -87,6 +92,7 @@ async fn test_client_http() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: true,
         files: false,
+        limit: None,
         test_client: TestClient {
             headers: headers_unknown_type.clone(),
             bytes: Default::default(),
@@ -101,6 +107,7 @@ async fn test_client_http() {
     let client = X509Client::<DebugX509Iterator>::new(X509ClientConfiguration {
         strict: false,
         files: false,
+        limit: None,
         test_client: TestClient {
             headers: headers_unknown_type.clone(),
             bytes: Default::default(),

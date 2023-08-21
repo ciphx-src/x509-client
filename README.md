@@ -72,6 +72,7 @@ async fn get_all_certificates(url: &url::Url) -> X509ClientResult<Vec<Certificat
     let config = X509ClientConfiguration {
         strict: true,
         files: false,
+        limit: None,
         http_client: Some(
             ClientBuilder::new()
             .redirect(reqwest::redirect::Policy::limited(2))
@@ -108,11 +109,12 @@ The  [`X509ClientConfiguration`](crate::X509ClientConfiguration) struct is defin
 X509ClientConfiguration {
     strict: false,
     files: false,
+    limit: None,
     http_client: None
 };
 
 pub struct X509ClientConfiguration {
-    /// If true, only attempt parse once. 
+    /// If true, only attempt parse once.
     /// Use either filename extension or http header to determine type.
     /// If false, attempt to parse from all known formats before returning error.
     pub strict: bool,
@@ -120,6 +122,9 @@ pub struct X509ClientConfiguration {
     /// If true, allow `File` transport scheme.
     /// If false, transport attempts will fail for `File` scheme.
     pub files: bool,
+
+    /// Limits max transfer size in bytes. If None, apply no limit.
+    pub limit: Option<usize>,
 
     /// Optional Reqwest client.
     /// If None, a default Reqwest client will be instantiated.
