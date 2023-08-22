@@ -23,7 +23,8 @@ impl IntoIterator for DebugX509Iterator {
 
     fn into_iter(self) -> Self::IntoIter {
         self.0
-            .map_or_else(|| vec![].into_iter(), |i| vec![i].into_iter())
+            .map_or_else(std::vec::Vec::new, |b| vec![b])
+            .into_iter()
     }
 }
 
