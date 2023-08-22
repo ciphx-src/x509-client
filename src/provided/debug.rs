@@ -26,6 +26,12 @@ impl IntoIterator for DebugX509Iterator {
     }
 }
 
+impl FromIterator<<Self as IntoIterator>::Item> for DebugX509Iterator {
+    fn from_iter<T: IntoIterator<Item = <Self as IntoIterator>::Item>>(iter: T) -> Self {
+        Self(iter.into_iter().next().unwrap_or(Bytes::new()))
+    }
+}
+
 impl X509Iterator for DebugX509Iterator {
     type X509IteratorError = Infallible;
 
