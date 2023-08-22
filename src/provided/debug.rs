@@ -6,17 +6,6 @@ use std::vec;
 #[derive(Clone, Debug)]
 pub struct DebugX509Iterator(Option<Bytes>);
 
-impl From<Bytes> for DebugX509Iterator {
-    fn from(bytes: Bytes) -> Self {
-        Self(Some(bytes))
-    }
-}
-
-impl From<DebugX509Iterator> for Bytes {
-    fn from(src: DebugX509Iterator) -> Self {
-        src.0.unwrap_or_else(Bytes::new)
-    }
-}
 impl IntoIterator for DebugX509Iterator {
     type Item = Bytes;
     type IntoIter = vec::IntoIter<Self::Item>;
