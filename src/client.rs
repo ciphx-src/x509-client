@@ -1,13 +1,13 @@
 use crate::api::X509Iterator;
 use crate::parse::{X509Parse, X509Type};
-#[cfg(not(test))]
-use crate::reqwest::Client;
 use crate::{X509ClientError, X509ClientResult};
 use log::debug;
 use std::path::Path;
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 use url::Url;
+#[cfg(not(test))]
+use {crate::reqwest::Client, bytes::BytesMut};
 
 /// X509 Client Configuration
 #[derive(Clone, Default)]
@@ -21,6 +21,9 @@ pub struct X509ClientConfiguration {
     /// If false, transport attempts will fail for `File` scheme.
     pub files: bool,
 
+    /// Limits max transfer size in bytes. If None, apply no limit.
+    pub limit: Option<usize>,
+
     /// Optional Reqwest client.
     /// If None, a default Reqwest client will be instantiated.
     #[cfg(not(test))]
@@ -29,6 +32,13 @@ pub struct X509ClientConfiguration {
     #[cfg(test)]
     pub test_client: TestClient,
 }
+
+// pub trait X509HttpClient {
+//     fn get<U: IntoUrl>(
+//         &self,
+//         url: U,
+//     ) -> X509ClientResult<impl Future<Output = Result<Response, crate::Error>>>;
+// }
 
 #[cfg(test)]
 #[derive(Clone, Default)]
@@ -46,6 +56,7 @@ pub struct X509Client<X: X509Iterator> {
     #[cfg(test)]
     test_client: TestClient,
     files: bool,
+    limit: Option<usize>,
 }
 
 impl<X: X509Iterator> X509Client<X>
@@ -61,6 +72,7 @@ where
             #[cfg(test)]
             test_client: config.test_client,
             files: config.files,
+            limit: config.limit,
         }
     }
 
@@ -103,19 +115,43 @@ where
     async fn http_get_certificates(&self, origin_url: &Url) -> X509ClientResult<X> {
         #[cfg(not(test))]
         let (headers, bytes) = {
-            let resp = self
+            let mut resp = self
                 .http_client
                 .get(origin_url.as_str())
                 .send()
                 .await?
                 .error_for_status()?;
 
-            (X509Type::from(resp.headers()), resp.bytes().await?)
+            let x509_type = X509Type::from(resp.headers());
+
+            let buf = match self.limit {
+                None => resp.bytes().await?,
+                Some(limit) => {
+                    let mut buf = BytesMut::new();
+                    while let Some(b) = resp.chunk().await? {
+                        buf.extend(b);
+                        if buf.len() > limit {
+                            return Err(X509ClientError::Error(
+                                format!(
+                                    "total transferred bytes {} exceeded limit {}",
+                                    buf.len(),
+                                    limit
+                                )
+                                .to_string(),
+                            ));
+                        }
+                    }
+                    buf.into()
+                }
+            };
+
+            (x509_type, buf)
         };
 
         #[cfg(test)]
         let (headers, bytes) = {
             let _ = origin_url;
+            let _ = self.limit;
             (
                 X509Type::from(&self.test_client.headers),
                 &self.test_client.bytes,
@@ -136,6 +172,7 @@ where
     /// X509ClientConfiguration {
     ///         strict: false,
     ///         files: false,
+    ///         limit: None,
     ///         http_client: None
     /// };
     /// ```

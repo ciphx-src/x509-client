@@ -64,6 +64,8 @@ impl From<Box<dyn X509IteratorError>> for X509ClientError {
     }
 }
 
+impl X509IteratorError for Infallible {}
+
 impl From<Infallible> for X509ClientError {
     fn from(e: Infallible) -> Self {
         Self::X509IteratorError(Box::new(e))

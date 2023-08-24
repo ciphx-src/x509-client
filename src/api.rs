@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Display};
 
 /// X509 Deserializer API
-pub trait X509Iterator: IntoIterator
+pub trait X509Iterator: IntoIterator + FromIterator<Self::Item>
 where
     Self: Sized,
 {

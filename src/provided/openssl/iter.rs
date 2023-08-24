@@ -15,6 +15,12 @@ impl IntoIterator for OpenSSLX509Iterator {
     }
 }
 
+impl FromIterator<<Self as IntoIterator>::Item> for OpenSSLX509Iterator {
+    fn from_iter<T: IntoIterator<Item = <Self as IntoIterator>::Item>>(iter: T) -> Self {
+        Self(iter.into_iter().collect())
+    }
+}
+
 impl X509Iterator for OpenSSLX509Iterator {
     type X509IteratorError = OpenSSLX509IteratorError;
 

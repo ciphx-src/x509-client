@@ -18,6 +18,12 @@ impl IntoIterator for TestX509Iterator {
     }
 }
 
+impl FromIterator<<Self as IntoIterator>::Item> for TestX509Iterator {
+    fn from_iter<T: IntoIterator<Item = <Self as IntoIterator>::Item>>(_: T) -> Self {
+        Self
+    }
+}
+
 impl X509Iterator for TestX509Iterator {
     type X509IteratorError = X509ClientError;
 
