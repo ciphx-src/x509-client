@@ -12,6 +12,4 @@ docker compose up --detach --wait --wait-timeout 5
 
 docker compose exec identity /root.sh -t > root.pem
 
- curl --cacert root.pem https://identity.ciph.xxx:4443/certificates/identity.tar.gz |
-tar xzv -
-
+curl --cacert root.pem https://identity.ciph.xxx:4443/certificates/identity.tar.gz | tar xzv 
