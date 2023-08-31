@@ -3,7 +3,7 @@
 mkdir -p target/tmp
 cd target/tmp
 
-git clone https://github.com/merlincinematic/pki-test-framework-dev.git pki-test-framework
+git clone --depth 1 --branch v0.2.2 https://github.com/merlincinematic/pki-test-framework.git pki-test-framework
 cd pki-test-framework
 
 docker compose build --no-cache --build-arg AIA_URL_SERVER_PORT
