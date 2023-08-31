@@ -12,6 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Certificate server start
+        run: |
+          sh tests/integration_start.sh        
+
       - name: Update local toolchain
         run: |
           rustup update
@@ -30,3 +34,7 @@ jobs:
       - name: Build
         run: |
           cargo build --all-features --release   
+
+      - name: Certificate server stop
+        run: |
+          sh tests/integration_stop.sh
