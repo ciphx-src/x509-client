@@ -238,3 +238,19 @@ The [OpenSSL-based](https://github.com/sfackler/rust-openssl) implementation [`O
 
 The debug implementation [`DebugX509Iterator`](crate::provided::debug::DebugX509Iterator) is always available. It copies the bytes returned by server into a `Once<bytes::Bytes>` iterator.
 
+## Integration Tests
+
+Integration tests depend on the [PKI Test Framework](https://github.com/merlincinematic/pki-test-framework).
+
+Before running the tests with `cargo test`, start the certificate server.
+
+``` shell
+sh tests/integration_start.sh
+```
+
+The certificate server can be shut down with:
+``` shell
+sh tests/integration_stop.sh
+```
+
+

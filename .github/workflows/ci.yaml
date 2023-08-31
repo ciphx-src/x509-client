@@ -22,10 +22,18 @@ jobs:
           cargo fmt -- --check
           cargo clippy --all-features -- -D warnings          
 
+      - name: Certificate server start
+        run: |
+          sh tests/integration_start.sh
+
       - name: Test
         run: |
           cargo check
           cargo test --all --all-features
+
+      - name: Certificate server stop
+        run: |
+          sh tests/integration_stop.sh
 
       - name: Build
         run: |
